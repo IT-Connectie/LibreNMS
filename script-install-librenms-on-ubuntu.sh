@@ -61,8 +61,8 @@ echo "########################"
 echo "Configuring PHP timezone"
 echo "########################"
 
-sed -i 's/;date.timezone =/date.timezone = Europe\/Amsterdam/' /etc/php/8.3/fpm/php.ini
-sed -i 's/;date.timezone =/date.timezone = Europe\/Amsterdam/' /etc/php/8.3/cli/php.ini
+sed -i 's/;date.timezone =/date.timezone = Europe\/Amsterdam/' /etc/php/8.5/fpm/php.ini
+sed -i 's/;date.timezone =/date.timezone = Europe\/Amsterdam/' /etc/php/8.5/cli/php.ini
 
 echo
 echo "#############################################"
