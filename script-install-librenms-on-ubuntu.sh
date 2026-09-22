@@ -20,7 +20,16 @@ echo "############################"
 echo
 
 apt update
-apt install -y acl curl fping git graphviz imagemagick mariadb-client mariadb-server mtr-tiny nginx-full nmap php-cli php-curl php-fpm php-gd php-gmp php-json php-mbstring php-mysql php-snmp php-xml php-zip rrdtool snmp snmpd unzip python3-command-runner python3-pymysql python3-dotenv python3-redis python3-setuptools python3-psutil python3-systemd python3-pip whois traceroute iputils-ping tcpdump vim cron
+apt install -y acl curl fping git graphviz imagemagick mariadb-client mariadb-server mtr-tiny nginx-full nmap php-cli php-curl php-fpm php-gd php-gmp php-mbstring php-mysql php-snmp php-xml php-zip rrdtool snmp snmpd unzip python3-command-runner python3-pymysql python3-dotenv python3-redis python3-setuptools python3-psutil python3-systemd python3-pip whois traceroute iputils-ping tcpdump vim cron
+
+echo
+echo "##############################"
+echo "Detecting installed PHP version"
+echo "##############################"
+echo
+
+PHP_VERSION=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')
+echo "Detected PHP version: $PHP_VERSION"
 
 echo
 echo "######################"
@@ -61,8 +70,8 @@ echo "########################"
 echo "Configuring PHP timezone"
 echo "########################"
 
-sed -i 's/;date.timezone =/date.timezone = Europe\/Amsterdam/' /etc/php/8.3/fpm/php.ini
-sed -i 's/;date.timezone =/date.timezone = Europe\/Amsterdam/' /etc/php/8.3/cli/php.ini
+sed -i 's/;date.timezone =/date.timezone = Europe\/Amsterdam/' /etc/php/${PHP_VERSION}/fpm/php.ini
+sed -i 's/;date.timezone =/date.timezone = Europe\/Amsterdam/' /etc/php/${PHP_VERSION}/cli/php.ini
 
 echo
 echo "#############################################"
@@ -106,11 +115,11 @@ echo "#####################################"
 echo "Configuring PHP-FPM pool for LibreNMS"
 echo "#####################################"
 
-cp /etc/php/8.3/fpm/pool.d/www.conf /etc/php/8.3/fpm/pool.d/librenms.conf
-sed -i 's/user = www-data/user = librenms/' /etc/php/8.3/fpm/pool.d/librenms.conf
-sed -i 's/group = www-data/group = librenms/' /etc/php/8.3/fpm/pool.d/librenms.conf
-sed -i 's/\[www\]/\[librenms\]/' /etc/php/8.3/fpm/pool.d/librenms.conf
-sed -i 's|listen = /run/php/php8.3-fpm.sock|listen = /run/php-fpm-librenms.sock|' /etc/php/8.3/fpm/pool.d/librenms.conf
+cp /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf /etc/php/${PHP_VERSION}/fpm/pool.d/librenms.conf
+sed -i 's/user = www-data/user = librenms/' /etc/php/${PHP_VERSION}/fpm/pool.d/librenms.conf
+sed -i 's/group = www-data/group = librenms/' /etc/php/${PHP_VERSION}/fpm/pool.d/librenms.conf
+sed -i 's/\[www\]/\[librenms\]/' /etc/php/${PHP_VERSION}/fpm/pool.d/librenms.conf
+sed -i "s|listen = /run/php/php${PHP_VERSION}-fpm.sock|listen = /run/php-fpm-librenms.sock|" /etc/php/${PHP_VERSION}/fpm/pool.d/librenms.conf
 
 
 
@@ -156,7 +165,7 @@ echo
 echo "Restarting Nginx and PHP-FPM..."
 echo
 systemctl restart nginx
-systemctl restart php8.3-fpm
+systemctl restart php${PHP_VERSION}-fpm
 
 echo "#######################"
 echo "Setting up lnms command"
